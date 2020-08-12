@@ -12,16 +12,44 @@ body {
 	margin: 1rem;
 }
 
+.Boy {
+	touch-action: none;
+	user-select: none;
+	margin: 1rem;
+	width: 100px;
+}
+
+nav {
+	display: flex;
+	flex-flow: row wrap;
+	margin: 0 0.5em;	
+}
+
+nav a {
+	color: blue;
+	padding: 1em 0.5em 1em;
+}
+
+nav a.is-active {
+	color: black;
+}
+
 .Figma {
-	border: 10px solid brown;
 	height: 400px;
 	overflow: hidden;
 }
 
 .Figma iframe {
 	width: 100%;
-	height: 500px;
+	height: calc(400px + 100px);
 	border: 0;
-	/* height: calc(100vh + 100px); */
 	transform: translate3d(0, -50px, 0);
+}
+
+.Figma--full {
+	height: 100vh;
+}
+
+.Figma--full iframe {
+	height: calc(100vh + 100px);
 }
