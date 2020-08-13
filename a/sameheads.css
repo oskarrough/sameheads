@@ -11,6 +11,9 @@ body {
 	/* overflow: hidden; */
 }
 
+iframe {
+	max-width: 100%;
+}
 
 .Title {
 	margin: 1rem;
@@ -29,16 +32,23 @@ nav {
 	display: flex;
 	flex-flow: row wrap;
 	margin: 0 0.5em;	
+	font-size: 0.875rem;
 }
 
 nav a {
-	color: blue;
-	padding: 1em 0.5em 1em;
+	color: black;
+	padding: 1em 0.5em;
 }
 
 nav a.is-active {
 	color: black;
 }
+
+.SplashVideo {
+	margin-top: 25vh;
+}
+
+.Social {}
 
 .Figma {
 	height: 400px;
@@ -60,17 +70,3 @@ nav a.is-active {
 	height: calc(100vh + 100px);
 }
 
-.Social {
-	display: flex;
-	flex-flow: row wrap;
-	list-style: none;
-	padding: 0;
-}
-
-.Social a {
-	padding: 1em 0.5em 1em;
-}
-
-.SplashVideo {
-	margin-top: 25vh;
-}
