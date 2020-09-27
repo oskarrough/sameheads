@@ -53,17 +53,19 @@ same-menu {
 	top: 0;
 	width: 100%;
 	z-index: 1;
-	background: black;
+	/* background: black; */
+	border-bottom: 1px solid gold;
 }
 
 same-menu a {
 	padding: 0.6rem 1.2rem;
-	color: #fff;
+	/* color: #fff; */
 	text-decoration: none;
 }
 
 same-menu a.is-active {
 	background: #b91231;
+	color: whitesmoke;
 }
 
 .SplashVideo {
