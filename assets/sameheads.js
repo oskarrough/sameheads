@@ -1,7 +1,7 @@
 const boy = document.querySelector('.Boy')
 
-const boySrc = 'b/skid-mark-web.png'
-const girlSrc = 'b/girl.png'
+const boySrc = 'media/skid-mark-web.png'
+const girlSrc = 'media/girl.png'
 
 // gsap.from(boy, {x: '-120%', delay: 0.5})
 

@@ -1,5 +1,12 @@
 html {
 	height: 100%;
+	background: #fff;
+}
+
+@media (min-width: 700px) {
+	html {
+		font-size: 20px;
+	}
 }
 
 body {
@@ -32,27 +39,34 @@ article {
 	width: 100px;
 }
 
-nav {
+nav,
+.Social {
 	display: flex;
 	flex-flow: row wrap;
-	margin: 0 0.5em;	
 	font-size: 0.875rem;
 }
 
+nav {
+	background: black;
+}
+
 nav a {
-	color: black;
-	padding: 1em 0.5em;
+	color: #fff;
+	padding: 0.6em 1em;
 }
 
 nav a.is-active {
-	color: black;
+	background: #b91231;
 }
 
 .SplashVideo {
 	margin-top: 20vh;
 }
 
-.Social {}
+.Social {
+	margin-top: auto;
+	justify-content: flex-end;
+}
 
 .Figma {
 	height: 400px;
