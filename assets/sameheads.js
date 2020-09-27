@@ -3,7 +3,7 @@ const boy = document.querySelector('.Boy')
 const boySrc = '/media/skid-mark-web.png'
 const girlSrc = '/media/girl.png'
 
-// gsap.from(boy, {x: '-120%', delay: 0.5})
+gsap.to(boy, {duration: 0.5, scale: 1.1, repeat: 2, delay: 1, repeatDelay: 0, yoyo: true})
 
 let clicked = false
 Draggable.create(boy, {
@@ -12,9 +12,9 @@ Draggable.create(boy, {
 	dragResistance: 0.1,
 	edgeResistance: 0.65,
 	// type: 'rotation'
-	onClick: function() {
-		gsap.to(this.target, {rotate: '+=45'})
-	},
+	// onClick: function() {
+	// 	gsap.to(this.target, {rotate: '+=45'})
+	// },
 	onDrag() {
 		if (this.hitTest('iframe', '50%')) {
 			gsap.to(this.target, {autoAlpha: 0.25})
