@@ -1,8 +1,11 @@
-const boy = document.querySelector('.Boy')
+window.addEventListener('load', () => {
+	quicklink.listen()
+})
 
 const boySrc = '/media/skid-mark-web.png'
 const girlSrc = '/media/girl.png'
 
+const boy = document.querySelector('.Boy')
 gsap.to(boy, {duration: 0.5, scale: 1.1, repeat: 2, delay: 1, repeatDelay: 0, yoyo: true})
 
 let clicked = false
@@ -31,6 +34,7 @@ Draggable.create(boy, {
 	}
 })
 
+// Displays the menu and uses the URL to toggle active state.
 const menu = [
 	{href:"/", title: 'Sameheads'},
 	{href:"music.html", title: 'Music'},
@@ -54,6 +58,7 @@ customElements.define('same-menu', class SameheadsMenu extends HTMLElement {
 	}
 })
 
+// Just the social links..
 customElements.define('same-social', class SameheadsSocial extends HTMLElement {
 	connectedCallback() {
 		this.innerHTML = `
@@ -68,6 +73,7 @@ customElements.define('same-social', class SameheadsSocial extends HTMLElement {
 	}
 })
 
+// Give it a Wordpress REST API endpoint and it'll return the content for that post.
 customElements.define('wp-content', class WpContent extends HTMLElement {
 	constructor() {
 		super()
@@ -80,7 +86,7 @@ customElements.define('wp-content', class WpContent extends HTMLElement {
 	connectedCallback() {
 		// this.textContent = `Loading ${this.url}`
 		this.model().then(model => {
-			console.log(model)
+			// console.log(model)
 			this.innerHTML = model.content.rendered
 		})
 	}
