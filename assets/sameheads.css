@@ -39,7 +39,7 @@ figure {
 
 .Boy {
 	position: absolute;
-	right: 10%;
+	left: 10%;
 	z-index: 2;
 	touch-action: none;
 	user-select: none;
@@ -51,7 +51,7 @@ nav,
 .Social {
 	display: flex;
 	flex-flow: row wrap;
-	font-size: 0.8125rem;
+	/* font-size: 0.8125rem; */
 }
 
 same-menu {
@@ -72,18 +72,10 @@ same-menu a {
 	text-decoration: none;
 }
 
-same-menu .Logo {
-	height: 1em;
-}
-
 same-menu a.is-active {
 	text-decoration: underline;
-	/* background: #b91231; */
-	/* color: whitesmoke; */
-}
-
-.SplashVideo {
-	margin-top: 10vh;
+	/* background: #b91231;
+	color: whitesmoke; */
 }
 
 .Social {
@@ -120,14 +112,6 @@ same-menu a.is-active {
 
 .Split {
 	flex: 1;
-	display: flex;
-	flex-flow: column nowrap;
-}
-
-@media (max-width: 999px) {
-.Split .Figma {
-	order: -1;
-}
 }
 
 img {
@@ -142,7 +126,6 @@ img {
 	}
 	.Split .Figma {
 		height: auto;
-		order: auto;
 	}
 	.Split .Figma iframe {
 		height: calc(100% + 5rem);
