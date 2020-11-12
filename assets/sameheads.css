@@ -20,8 +20,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	padding-bottom: 45px;
-	/* align-items: center; */
-	/* overflow: hidden; */
+	overflow-y: scroll;
 }
 
 iframe {
@@ -51,7 +50,6 @@ nav,
 .Social {
 	display: flex;
 	flex-flow: row wrap;
-	/* font-size: 0.8125rem; */
 }
 
 same-menu {
@@ -66,7 +64,7 @@ same-menu {
 }
 
 same-menu a {
-	padding: 0.6rem 1rem;
+	padding: 0.8rem 1rem;
 	color: black;
 	color: white;
 	text-decoration: none;
@@ -86,7 +84,6 @@ same-menu a.is-active {
 .Social a {
 	padding: 0.6em;
 	color: black;
-	font-size: 
 }
 
 .Figma {
@@ -107,10 +104,6 @@ same-menu a.is-active {
 	height: calc(100vh - 45px);
 }
 
-.Figma--full iframe {
-	/* height: calc(100vh + 100px); */
-}
-
 .Split {
 	flex: 1;
 	display: flex;
@@ -126,16 +119,15 @@ same-menu a.is-active {
 
 @media (min-width: 1000px) {
 	.Split {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
+		/* display: grid;
+		grid-template-columns: 1fr 1fr; */
+		flex-flow: row nowrap;
 	}
 	.Split .Figma {
-		/* height: auto; */
-		height: calc(100vh - 45px);
-	}
-	.Split .Figma iframe {
-		/* height: calc(100% + 5rem); */
-		/* height: calc(100vh + 100px); */
+		/* At least fill the screen but expand to match left column */
+		height: auto;
+		min-height: calc(100vh - 45px);
+		width: 50%;
 	}
 }
 
@@ -150,6 +142,10 @@ same-social {
 	display: block;
 }
 
+same-social {
+	margin-top: auto;
+}
+
 wp-content iframe {
 	margin-bottom: 1em;
 }
@@ -157,4 +153,9 @@ wp-content iframe {
 img {
 	max-width: 100%;
 	height: auto;
+}
+
+.Split > article {
+	display: flex;
+	flex-flow: column nowrap;
 }
