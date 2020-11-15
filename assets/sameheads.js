@@ -57,7 +57,7 @@ customElements.define('same-menu', class SameheadsMenu extends HTMLElement {
 		}
 		this.innerHTML = `
 			<h1 hidden>Sameheads</h1>
-			<nav class="Nav">
+			<nav>
 				${menu.map(m => `<a class="${isActive(m.href)}" href=${m.href}>${m.title}</a>`).join('')}
 			</nav>
 		`
@@ -70,13 +70,11 @@ customElements.define('same-menu', class SameheadsMenu extends HTMLElement {
 customElements.define('same-social', class SameheadsSocial extends HTMLElement {
 	connectedCallback() {
 		this.innerHTML = `
-			<div class="Social">
-				<a target="_blank" rel="noopener" href="https://www.instagram.com/sameheads/">Instagram</a>
-				<a target="_blank" rel="noopener" href="https://www.facebook.com/sameheadsberlin/">Facebook</a>
-				<a target="_blank" rel="noopener" href="https://soundcloud.com/sameheads">Soundcloud</a>
-				<a target="_blank" rel="noopener" href="https://sameheads.bandcamp.com/">Bandcamp</a>
-				<a href="mailto:info@sameheads.com">Email</a></li>
-			</div>
+			<a target="_blank" rel="noopener" href="https://www.instagram.com/sameheads/">Instagram</a>
+			<a target="_blank" rel="noopener" href="https://www.facebook.com/sameheadsberlin/">Facebook</a>
+			<a target="_blank" rel="noopener" href="https://soundcloud.com/sameheads">Soundcloud</a>
+			<a target="_blank" rel="noopener" href="https://sameheads.bandcamp.com/">Bandcamp</a>
+			<a href="mailto:info@sameheads.com">Email</a></li>
 		`
 	}
 })

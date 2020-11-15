@@ -32,10 +32,6 @@ figure {
 	margin: 0;
 }
 
-.Title {
-	margin: 1rem;
-}
-
 .Boy {
 	position: absolute;
 	left: 10%;
@@ -46,50 +42,67 @@ figure {
 	width: 100px;
 }
 
-@media (min-width: 1000px) {
-	.Boy {
-		left: 45%;
-	}
-}
-
-nav,
-.Social {
-	display: flex;
-	flex-flow: row wrap;
-}
-
 same-menu {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
 	z-index: 1;
-	background: hsla(0, 0%, 100%, 0.75);
 	background: black;
-	/* background: black; */
-	/* border-bottom: 1px solid gold; */
+	background: hsl(153deg 71% 6%);
+}
+
+same-menu nav {
+	display: flex;
+	flex-flow: row wrap;
 }
 
 same-menu a {
 	padding: 0.8rem 1rem;
-	color: black;
 	color: white;
 	text-decoration: none;
 }
 
 same-menu a.is-active {
 	text-decoration: underline;
-	/* background: #b91231;
-	color: whitesmoke; */
 }
 
-.Social {
+article {
+	flex: 1;
+	margin: 1.5rem;
+}
+
+wp-content,
+same-menu,
+same-social,
+figma-image {
+	display: block;
+}
+
+figma-image img {
+	object-fit: cover;
+}
+
+same-social {
+	margin-top: auto;
+	display: flex;
+	flex-flow: row wrap;
 	margin-top: auto;
 	justify-content: flex-end;
+	font-size: smaller;
 }
 
-.Social a {
+same-social a {
 	padding: 0.6em;
 	color: black;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+wp-content iframe {
+	margin-bottom: 1em;
 }
 
 .Figma {
@@ -129,9 +142,13 @@ same-menu a.is-active {
 }
 
 @media (min-width: 1000px) {
+	html {
+		font-size: 20px;
+	}
+	.Boy {
+		left: 45%;
+	}
 	.Split {
-		/* display: grid;
-		grid-template-columns: 1fr 1fr; */
 		flex-flow: row nowrap;
 	}
 	.Split > article {
@@ -149,36 +166,6 @@ same-menu a.is-active {
 		bottom: 45px;
 		/* At least fill the screen but expand to match left column */
 		height: auto;
-		/* min-height: calc(100vh - 45px); */
 		width: 50%;
 	}
 }
-
-figma-image img {
-	object-fit: cover;
-}
-
-article {
-	flex: 1;
-	margin: 1.5rem;
-}
-
-wp-content,
-same-menu,
-same-social {
-	display: block;
-}
-
-same-social {
-	margin-top: auto;
-}
-
-wp-content iframe {
-	margin-bottom: 1em;
-}
-
-img {
-	max-width: 100%;
-	height: auto;
-}
-
