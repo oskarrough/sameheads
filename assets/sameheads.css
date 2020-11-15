@@ -140,7 +140,8 @@ same-menu a.is-active {
 		padding: 1rem;
 		flex: 0 0 50%;
 	}
-	.Split .Figma {
+	.Split .Figma,
+	.Split figma-image{
 		position: fixed;
 		top: 0;
 		right: 0;
@@ -151,6 +152,10 @@ same-menu a.is-active {
 		/* min-height: calc(100vh - 45px); */
 		width: 50%;
 	}
+}
+
+figma-image img {
+	object-fit: cover;
 }
 
 article {
@@ -177,16 +182,3 @@ img {
 	height: auto;
 }
 
-figma-image {
-	/* background: red; */
-	position: fixed;
-	top: 0;
-	right: 0;
-	width: 50%;
-	height: 100%;
-	display: flex;
-}
-
-figma-image img {
-	object-fit: cover;
-}
