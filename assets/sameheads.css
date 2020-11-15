@@ -46,6 +46,12 @@ figure {
 	width: 100px;
 }
 
+@media (min-width: 1000px) {
+	.Boy {
+		left: 45%;
+	}
+}
+
 nav,
 .Social {
 	display: flex;
@@ -169,4 +175,18 @@ wp-content iframe {
 img {
 	max-width: 100%;
 	height: auto;
+}
+
+figma-image {
+	/* background: red; */
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 50%;
+	height: 100%;
+	display: flex;
+}
+
+figma-image img {
+	object-fit: cover;
 }
