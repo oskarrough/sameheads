@@ -1,3 +1,8 @@
+// import lazysizes from 'https://cdn.skypack.dev/lazysizes';
+// import quicklink from 'https://cdn.skypack.dev/quicklink';
+// import gsap from 'https://cdn.skypack.dev/gsap';
+// import Draggable from 'https://cdn.skypack.dev/gsap/Draggable';
+
 window.addEventListener('load', () => {
 	quicklink.listen()
 })
