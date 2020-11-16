@@ -6,7 +6,7 @@ html {
 	height: 100%;
 	background: #fff;
 	font-size: 16px;
-	font-family: segoe ui, sans-serif;
+	font-family: serif;
 }
 
 body {
@@ -44,6 +44,7 @@ same-menu {
 	z-index: 1;
 	background: black;
 	background: hsl(153deg 71% 6%);
+	font-family: segoe ui, sans-serif;
 }
 
 same-menu nav {
