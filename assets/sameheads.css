@@ -156,16 +156,27 @@ wp-content iframe {
 		margin: 0;
 		padding: 1rem;
 		flex: 0 0 50%;
+		background: white;
+		position: relative;
 	}
 	.Split .Figma,
 	.Split figma-image{
 		position: fixed;
 		top: 0;
-		right: 0;
 		left: 50%;
 		bottom: 45px;
 		/* At least fill the screen but expand to match left column */
 		height: auto;
 		width: 50%;
+		/* width: 100%;
+		height: 100%; */
+	}
+	.Split .Figma iframe {
+		position: absolute;
+		max-width: none;
+		left: -25%;
+		top: -25%;
+		width: 150%;
+		height: 150%;
 	}
 }
