@@ -3,30 +3,35 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Contact - Sameheads</title>
-	<link rel="stylesheet" href="sameheads.css">
+	<title>Contact Sameheads</title>
+	<meta name="description" content="Richardstr. 10, 12043, Berlin">
+	<link rel="stylesheet" href="/assets/sameheads.css">
+	<link rel="dns-prefetch" href="https://cms.sameheads.com">
 </head>
+<body>
 
 	<header class="Header">
-		<img class="Boy" src="skid-mark-web.png" alt="Sameheads">
-		<nav>
-			<a href="/">Sameheads</a>
-			<a href="music.html">Music</a>
-			<a href="fashion.html">Fashion</a>
-			<a href="residents.html">Residents</a>
-			<a href="events.html">Events</a>
-			<a class="is-active" href="contact.html">Contact</a>
-			<a href="community.html">Community</a>
-		</nav>
+		<img class="Boy" src="/media/skid-mark-web.png" alt="Sameheads">
+		<same-menu active="contact"></same-menu>
 	</header>
 
-	<h1>Contact</h1>
+	<div class="Split">
+		<article>
+			<wp-content src="pages/17"></wp-content>
+			<same-social></same-social>
+		</article>
+		<figma-image src="ovvFEb1iZaNfuk7KLfkxwV?ids=535%3A4" />
+		<!-- <div class="Figma"> -->
+		<!-- 	<iframe loading="lazy" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FovvFEb1iZaNfuk7KLfkxwV%2FSameheads%3Fnode-id%3D535%253A4"></iframe> -->
+		<!-- </div> -->
+	</div>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.2/gsap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.2.2/lazysizes.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.2/Draggable.min.js"></script>
-	<!-- <script src="InertiaPlugin.min.js"></script> -->
-	<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-	<script src="sameheads.js" async></script>
+	<script src="/assets/quicklink.umd.js"></script>
+	<script src="/assets/InertiaPlugin.min.js"></script>
+	<script type="module" src="/assets/sameheads.js" async></script>
 
 </body>
 </html>

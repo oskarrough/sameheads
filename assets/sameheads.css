@@ -1,0 +1,171 @@
+* {
+	box-sizing: border-box;
+}
+
+html {
+	height: 100%;
+	background: #fff;
+	font-size: 16px;
+	font-family: serif;
+}
+
+body {
+	margin: 0;
+	min-height: 100%;
+	display: flex;
+	flex-direction: column;
+	padding-bottom: 45px;
+	overflow-y: scroll;
+}
+
+iframe {
+	display: block;
+	max-width: 100%;
+}
+
+figure {
+	margin: 0;
+}
+
+.Boy {
+	position: absolute;
+	left: 10%;
+	z-index: 2;
+	touch-action: none;
+	user-select: none;
+	margin: 1rem;
+	width: 100px;
+}
+
+same-menu {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	z-index: 1;
+	background: black;
+	background: hsl(153deg 71% 6%);
+	font-family: segoe ui, sans-serif;
+}
+
+same-menu nav {
+	display: flex;
+	flex-flow: row wrap;
+	padding: 0.5rem 0;
+}
+
+same-menu a {
+	padding: 0.3rem 0.75rem;
+	color: white;
+	text-decoration: none;
+}
+
+same-menu a.is-active {
+	text-decoration: underline;
+}
+
+article {
+	flex: 1;
+	margin: 1.5rem;
+}
+
+wp-content,
+same-menu,
+same-social,
+figma-image {
+	display: block;
+}
+
+figma-image img {
+	object-fit: cover;
+}
+
+same-social {
+	margin-top: auto;
+	display: flex;
+	flex-flow: row wrap;
+	margin-top: auto;
+	justify-content: flex-end;
+	font-size: smaller;
+}
+
+same-social a {
+	padding: 0.6em;
+	color: black;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+wp-content iframe {
+	margin-bottom: 1em;
+}
+
+.Figma {
+	background: #dfdfdf;
+	height: 400px;
+	overflow: hidden;
+}
+
+.Figma iframe {
+	width: 100%;
+	height: calc(100% + 100px);
+	transform: translate3d(0, -50px, 0);
+	border: 0;
+}
+
+.Figma--full {
+	height: 80vh;
+	height: calc(100vh - 45px);
+}
+
+.Split {
+	flex: 1;
+	display: flex;
+	flex-flow: column nowrap;
+}
+
+.Split > article {
+	display: flex;
+	flex-flow: column nowrap;
+}
+
+@media (max-width: 999px) {
+	.Split .Figma {
+		order: -1;
+		height: 60vh;
+	}
+	.Split--reverse .Figma {
+		order: 2;
+	}
+}
+
+@media (min-width: 1000px) {
+	html {
+		font-size: 20px;
+	}
+	.Boy {
+		left: 45%;
+	}
+	.Split {
+		flex-flow: row nowrap;
+	}
+	.Split > article {
+		/* width: 50%; */
+		margin: 0;
+		padding: 1rem;
+		flex: 0 0 50%;
+	}
+	.Split .Figma,
+	.Split figma-image{
+		position: fixed;
+		top: 0;
+		right: 0;
+		left: 50%;
+		bottom: 45px;
+		/* At least fill the screen but expand to match left column */
+		height: auto;
+		width: 50%;
+	}
+}
