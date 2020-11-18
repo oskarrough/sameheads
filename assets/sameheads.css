@@ -134,7 +134,10 @@ wp-content iframe {
 @media (max-width: 999px) {
 	.Split .Figma {
 		order: -1;
-		height: 70vh;
+		height: 60vh;
+	}
+	.Split--reverse .Figma {
+		order: 2;
 	}
 }
 
