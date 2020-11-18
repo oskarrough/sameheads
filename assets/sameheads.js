@@ -45,7 +45,7 @@ const menu = [
 	{href:"music.html", title: 'Music'},
 	{href:"fashion.html", title: 'Fashion'},
 	{href:"residents.html", title: 'Residents'},
-	{href:"archive.html", title: 'Sameheads Archive'},
+	{href:"archive.html", title: 'Archive'},
 	{href:"headsradio.html", title: 'Heads Radio'},
 	{href:"contact.html", title: 'Contact'}
 ]

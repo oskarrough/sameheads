@@ -50,10 +50,11 @@ same-menu {
 same-menu nav {
 	display: flex;
 	flex-flow: row wrap;
+	padding: 0.5rem 0;
 }
 
 same-menu a {
-	padding: 0.8rem 1rem;
+	padding: 0.3rem 0.75rem;
 	color: white;
 	text-decoration: none;
 }
