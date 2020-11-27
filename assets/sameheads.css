@@ -102,6 +102,12 @@ wp-content iframe {
 	margin-bottom: 1em;
 }
 
+same-social a:hover,
+wp-content a:hover {
+	background: blue;
+	color: white;
+}
+
 .Figma {
 	background: #dfdfdf;
 	height: 400px;
@@ -141,10 +147,10 @@ wp-content iframe {
 		max-width: none;
 		position: absolute;
 		max-width: none;
-		left: -25%;
-		top: -25%;
-		width: 150%;
-		height: 150%;
+		left: -75%;
+		top: -75%;
+		width: 250%;
+		height: 250%;
 	}
 	.Split--reverse .Figma {
 		order: 2;
