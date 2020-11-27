@@ -110,7 +110,8 @@ wp-content a:hover {
 
 .Figma {
 	background: #dfdfdf;
-	height: 400px;
+	height: 60vh;
+	position: relative;
 	overflow: hidden;
 }
 
@@ -137,13 +138,16 @@ wp-content a:hover {
 	flex-flow: column nowrap;
 }
 
+.Split .Figma {
+	order: -1;
+}
+
+.Split--reverse .Figma {
+	order: 2;
+}
+
 @media (max-width: 999px) {
-	.Split .Figma {
-		order: -1;
-		height: 60vh;
-		position: relative;
-	}
-	.Split .Figma iframe {
+	.Figma iframe {
 		max-width: none;
 		position: absolute;
 		max-width: none;
@@ -151,9 +155,6 @@ wp-content a:hover {
 		top: -75%;
 		width: 250%;
 		height: 250%;
-	}
-	.Split--reverse .Figma {
-		order: 2;
 	}
 }
 
@@ -175,6 +176,9 @@ wp-content a:hover {
 		background: white;
 		position: relative;
 	}
+	.Figma {
+		height: auto;
+	}
 	.Split .Figma,
 	.Split figma-image {
 		position: fixed;
@@ -187,7 +191,7 @@ wp-content a:hover {
 		/* width: 100%;
 		height: 100%; */
 	}
-	.Split .Figma iframe {
+	.Figma iframe {
 		position: absolute;
 		max-width: none;
 		left: -25%;
