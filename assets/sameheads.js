@@ -45,8 +45,9 @@ const menu = [
 	{href:"music.html", title: 'Music'},
 	{href:"fashion.html", title: 'Fashion'},
 	{href:"residents.html", title: 'Residents'},
-	{href:"archive.html", title: 'Archive'},
+	{href:"video-art.html", title: 'Video Art'},
 	{href:"headsradio.html", title: 'Heads Radio'},
+	{href:"archive.html", title: 'Archive'},
 	{href:"contact.html", title: 'Contact'}
 ]
 customElements.define('same-menu', class SameheadsMenu extends HTMLElement {
