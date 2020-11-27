@@ -135,6 +135,16 @@ wp-content iframe {
 	.Split .Figma {
 		order: -1;
 		height: 60vh;
+		position: relative;
+	}
+	.Split .Figma iframe {
+		max-width: none;
+		position: absolute;
+		max-width: none;
+		left: -25%;
+		top: -25%;
+		width: 150%;
+		height: 150%;
 	}
 	.Split--reverse .Figma {
 		order: 2;
@@ -160,7 +170,7 @@ wp-content iframe {
 		position: relative;
 	}
 	.Split .Figma,
-	.Split figma-image{
+	.Split figma-image {
 		position: fixed;
 		top: 0;
 		left: 50%;

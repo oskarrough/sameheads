@@ -65,7 +65,7 @@ customElements.define('same-menu', class SameheadsMenu extends HTMLElement {
 	}
 })
 
-				// <a href="/"><img class="Logo" src="/media/logo-sameheads.png" alt="Sameheads"></a>
+// <a href="/"><img class="Logo" src="/media/logo-sameheads.png" alt="Sameheads"></a>
 
 // Just the social links..
 customElements.define('same-social', class SameheadsSocial extends HTMLElement {
