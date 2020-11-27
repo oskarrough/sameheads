@@ -120,4 +120,3 @@ customElements.define('figma-image', class WpContent extends HTMLElement {
 		})
 	}
 })
-
