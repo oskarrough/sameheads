@@ -53,15 +53,30 @@ const menu = [
 customElements.define('same-menu', class SameheadsMenu extends HTMLElement {
 	connectedCallback() {
 		const active = this.getAttribute('active')
-		function isActive(href) { 
+		function activeClass(href) { 
 			return href.replace('.html', '') === active ? "is-active" : ''
 		}
 		this.innerHTML = `
 			<h1 hidden>Sameheads</h1>
+			<same-menu-button></same-menu-button>
 			<nav>
-				${menu.map(m => `<a class="${isActive(m.href)}" href=${m.href}>${m.title}</a>`).join('')}
+				${menu.map(m => `<a class="${activeClass(m.href)}" href=${m.href}>${m.title}</a>`).join('')}
 			</nav>
 		`
+	}
+})
+
+customElements.define('same-menu-button', class SameheadsMenuButton extends HTMLElement {
+	handleClick(event) {
+		event.preventDefault()
+		const menu = this.nextElementSibling
+		this.parentElement.classList.toggle('is-open')
+	}
+	connectedCallback() {
+		this.addEventListener('click', this.handleClick.bind(this))
+		this.innerHTML = `<button aria-label="Toggle Menu">
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><path d="M598.07 11.93c-20.1 7.64-34.57 20.5-41 36.58-1.81 4.42-25.12 76.77-51.85 160.77L456.59 362l-34.56.6-34.57.4v96.46h-48.24v64.31H162.38v32.16h64.3v337.62h80.38V990h32.16v-96.46h144.7V990h32.16v-96.46h144.7V990h32.16v-96.46h80.38V555.92h64.3v-32.16H660.78v-64.3h-48.24V363h-20.1c-11.05 0-20.1-.4-20.1-1.21 0-.6 22.51-59.08 50.04-130.02 51.44-132.23 56.27-147.1 53.66-165.99-2.81-20.7-19.09-42.2-38.79-50.84-11.85-5.22-29.54-6.43-39.18-3.01zm32.35 33.15c10.85 5.83 14.67 14.87 13.67 31.55-.8 12.66-6.03 27.73-53.66 150.12L537.38 363h-23.71c-23.91 0-23.91 0-22.51-4.62 1.81-6.03 90.83-286.17 93.45-294.41 2.61-7.84 11.05-18.29 16.68-20.5 7.43-3.01 22.1-2.2 29.13 1.61zM443.73 395.76c0 .2-5.43 5.83-12.06 12.46l-12.06 11.86v-24.92h12.06c6.63 0 12.06.2 12.06.6zm49.24 31.55l-32.15 32.15h-34.16l32.14-32.15 32.15-32.15h34.16l-32.14 32.15zm87.41-19.69v12.66l-19.49 19.49-19.69 19.69h-34.16l32.15-32.15c22.51-22.51 33.36-32.15 36.58-32.15 4.21 0 4.61.8 4.61 12.46zm48.23 100.08v16.08H371.39v-32.16h257.22v16.08zM307.08 668.46V781h48.24v48.24h96.46V781H548.23v48.24h96.46V781h48.24V555.92h48.24v305.46H258.85V555.92h48.24v112.54zm353.69-16.07v96.46H339.23V555.93h321.54v96.46zM419.62 789.04v8.04h-32.16V781h32.16v8.04zm192.92 0v8.04h-32.16V781h32.16v8.04z"/></svg>
+		</button>`
 	}
 })
 
