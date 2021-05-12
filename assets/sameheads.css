@@ -245,6 +245,15 @@ same-menu-button {
 	z-index: 999;
 }
 
+@media (max-width: 999px) {
+	same-menu {
+		width: 0;
+	}
+	same-menu.is-open {
+		width: 100%;
+	}
+}
+
 @media (min-width: 1000px) {
 	same-menu {
 		height: auto;
@@ -263,3 +272,4 @@ same-menu-button {
 		display: none;
 	}
 }
+
