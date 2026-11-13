@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a090b">
+<title>Sameheads 20 — For the Night</title>
+<meta name="description" content="Sameheads, for the night. Turn the dial.">
+<style>
+  @font-face{font-family:"Cormorant Upright";src:url("assets/fonts/CormorantUpright-400.ttf") format("truetype");font-weight:400;font-display:swap;}
+  @font-face{font-family:"Cormorant Upright";src:url("assets/fonts/CormorantUpright-700.ttf") format("truetype");font-weight:700;font-display:swap;}
+  @font-face{font-family:"Anton";src:url("assets/fonts/Anton-Regular.ttf") format("truetype");font-weight:400;font-display:swap;}
+
+  :root{
+    /* Four inks, sampled off her flyer: black ground, hot pink, lime, sand. */
+    --void:   #0a090b;
+    --pink:   #fa1653;
+    --lime:   #c8e25c;
+    --sand:   #eed3a8;
+    --ink:    var(--void);
+    --cream:  var(--lime);
+    --oxblood:var(--pink);
+    --blush:  var(--sand);
+    --serif:  "Cormorant Upright","Cormorant",Garamond,serif;
+    --sans:   "Anton","Arial Narrow",Impact,sans-serif;
+    --pad:    clamp(1.1rem,.7rem + 2.2vw,2.6rem);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ background:var(--void); -webkit-text-size-adjust:100%; }
+  body{
+    margin:0; min-height:100svh; overflow-x:clip;
+    color:var(--lime); font-family:var(--serif);
+    background:
+      radial-gradient(120% 90% at 50% 34%, #171016 0%, #0c0a0d 58%, #060506 100%);
+  }
+  /* printed grain, so the black is paper and not screen */
+  body::after{
+    content:""; position:fixed; inset:0; z-index:1; pointer-events:none;
+    opacity:.38; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");
+  }
+
+  .stage{
+    position:relative; z-index:2;
+    min-height:100svh;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding:var(--pad);
+    gap:clamp(.9rem,3.2vh,2.2rem);
+    text-align:center;
+  }
+
+  /* ---------- headline ---------- */
+  .head{ display:grid; gap:.35em; padding-top:.4rem; }
+  h1{
+    margin:0; font-family:var(--sans); font-weight:400;
+    font-size:clamp(2rem,1rem + 6.4vw,4.6rem);
+    line-height:.92; letter-spacing:.055em; color:var(--pink);
+    text-shadow:0 0 26px rgba(250,22,83,.28);
+  }
+  .years{
+    margin:0; font-size:clamp(.66rem,.6rem + .4vw,.86rem);
+    letter-spacing:.52em; text-indent:.52em; color:color-mix(in oklab,var(--lime) 72%,var(--void));
+  }
+
+  /* ---------- dial ---------- */
+  .dialwrap{ display:grid; justify-items:center; gap:calc(var(--pad)*.45); min-width:0; }
+  .dial{
+    position:relative;
+    width:min(92vw,64svh,580px);
+    aspect-ratio:1; border:0; padding:0; background:none;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  @media (max-height:700px){ .dial{ width:min(86vw,56svh,440px); } }
+
+  .dialclip{ display:block; width:100%; aspect-ratio:1; overflow:hidden; border-radius:50%; }
+  .dial svg{ display:block; width:100%; height:100%; will-change:transform; }
+  .dial:focus-visible{ outline:2px solid var(--blush); outline-offset:10px; border-radius:50%; }
+
+  .needle{
+    position:absolute; top:-5.5%; left:50%; transform:translateX(-50%);
+    width:clamp(18px,2.6vw,28px); height:auto; z-index:3; pointer-events:none;
+    filter:drop-shadow(0 3px 6px rgba(0,0,0,.8));
+  }
+  .hint{
+    margin:0; font-size:clamp(.6rem,.56rem + .24vw,.74rem);
+    letter-spacing:.44em; text-indent:.44em; text-transform:uppercase;
+    color:color-mix(in oklab,var(--lime) 74%,var(--void));
+    transition:color .2s ease;
+  }
+  .hint[data-spin="1"]{ color:var(--pink); }
+
+  /* ---------- foot ---------- */
+  .foot{
+    font-size:clamp(.56rem,.52rem + .2vw,.68rem);
+    letter-spacing:.34em; text-indent:.34em; text-transform:uppercase;
+    color:color-mix(in oklab,var(--lime) 46%,var(--void));
+    padding-bottom:env(safe-area-inset-bottom,0);
+  }
+  .foot p{ margin:0; }
+
+  /* ---------- result: a hot pink sticker on the black ---------- */
+  .sheet{
+    position:fixed; inset:0; z-index:20; display:grid; place-items:center;
+    padding:var(--pad);
+    background:color-mix(in oklab,var(--void) 88%, black);
+  }
+  .sheet[hidden]{ display:none; }
+  body.locked{ overflow:hidden; }
+
+  .slip{
+    position:relative; width:min(100%,24rem);
+    max-height:calc(100svh - 2*var(--pad)); overflow:auto;
+    background:var(--card,var(--pink));
+    color:var(--cardInk,var(--void));
+    padding:calc(var(--pad)*1.5) calc(var(--pad)*1.15) calc(var(--pad)*2.1);
+    display:grid; justify-items:center; gap:calc(var(--pad)*.42);
+    text-align:center; transform:rotate(-.5deg);
+    box-shadow:0 30px 70px -20px rgba(0,0,0,.9),
+               0 0 60px -18px color-mix(in oklab,var(--card,var(--pink)) 62%,transparent);
+  }
+  .slip::before{
+    content:""; position:absolute; inset:7px; pointer-events:none;
+    border:1px solid color-mix(in oklab,var(--cardInk,var(--void)) 55%,transparent);
+  }
+  .slip .stamp{ width:26%; max-width:110px; margin:0 auto .2em; display:block; }
+  /* the cassette is knocked out of its plate and printed in the card's own ink,
+     so it never sits in a foreign dark box on lime or cream */
+  .slip .stamp[data-kind="tape"]{
+    aspect-ratio:900/503; background:var(--cardInk,var(--void));
+    -webkit-mask:url("assets/v3/tape-ink.png") center/contain no-repeat;
+            mask:url("assets/v3/tape-ink.png") center/contain no-repeat;
+  }
+  .slip .stamp[data-kind="skid"]{
+    aspect-ratio:400/682;
+    background:url("assets/v3/skid-plate.png") center/contain no-repeat;
+  }
+  .kicker{
+    margin:0; font-size:.62rem; letter-spacing:.34em; text-indent:.34em;
+    text-transform:uppercase; color:var(--cardInk,var(--void)); font-weight:700;
+  }
+  .rtitle{
+    margin:0; font-weight:400;
+    font-size:clamp(1.15rem,.95rem + .9vw,1.6rem);
+    line-height:1.1; text-wrap:balance;
+    text-transform:uppercase; letter-spacing:.02em;
+  }
+  .rartist{
+    margin:0; font-size:.74rem; letter-spacing:.2em; text-indent:.2em;
+    text-transform:uppercase; color:var(--cardInk,var(--void));
+  }
+  .rnote{ margin:0; font-size:.88rem; line-height:1.45; max-width:28ch;
+    color:var(--cardInk,var(--void)); }
+  .rlink{ margin:0; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; }
+  .rlink a{ color:var(--cardInk,var(--void)); text-decoration:none;
+    border-bottom:1px solid color-mix(in oklab,var(--cardInk,var(--void)) 45%,transparent); }
+
+  .btn{
+    font-family:var(--serif); font-size:1rem;
+    letter-spacing:.18em; text-indent:.18em; text-transform:uppercase;
+    border-radius:0; border:0; cursor:pointer;
+    padding:.72em 1.3em .64em; width:100%;
+    transition:transform .12s ease, filter .12s ease;
+  }
+  .btn:active{ transform:translateY(1px); }
+  .btn:focus-visible{ outline:2px solid var(--cardInk,var(--void)); outline-offset:3px; }
+  .btn-primary{ background:var(--cardInk,var(--void)); color:var(--card,var(--pink)); }
+  .btn-primary:hover{ filter:brightness(1.35); }
+  .btn-ghost{
+    background:none; color:var(--cardInk,var(--void));
+    border:1px solid color-mix(in oklab,var(--cardInk,var(--void)) 55%,transparent);
+    font-size:.82rem; padding:.55em 1em .5em;
+  }
+  .btn-ghost:hover{ background:color-mix(in oklab,var(--cardInk,var(--void)) 10%,transparent); }
+  .actions{ display:grid; gap:calc(var(--pad)*.4); width:min(100%,19rem); margin-top:calc(var(--pad)*.8); }
+  .player{ width:100%; }
+  .player iframe{ width:100%; border:0; display:block; }
+  /* the reading: no chrome, just a rule that fills as she speaks */
+  .reading{ width:min(100%,19rem); display:grid; gap:.42rem; margin:.1rem 0 .35rem; }
+  .reading .track{
+    position:relative; height:2px; width:100%;
+    background:color-mix(in oklab,var(--cardInk,var(--void)) 34%,transparent);
+  }
+  .reading .fill{
+    position:absolute; inset:0 auto 0 0; width:0%;
+    background:var(--cardInk,var(--void));
+  }
+  .reading .time{
+    font-size:.72rem; letter-spacing:.06em; text-indent:.06em;
+    font-variant-numeric:tabular-nums;
+    text-transform:uppercase; color:var(--cardInk,var(--void));
+  }
+
+  @media (prefers-reduced-motion:reduce){ .dial svg{ transition:none !important; } }
+</style>
+</head>
+<body>
+<main class="stage">
+  <header class="head">
+    <h1>FOR THE NIGHT</h1>
+    <p class="years">2006—2026</p>
+  </header>
+
+  <section class="dialwrap">
+    <button class="dial" id="dial" type="button" aria-describedby="hint">
+      <span class="needle" aria-hidden="true">
+        <svg viewBox="0 0 24 40">
+          <path d="M12 40 L1 10 A11 11 0 0 1 23 10 Z" fill="#fa1653"/>
+        </svg>
+      </span>
+      <span class="dialclip">
+        <svg id="wheel" viewBox="0 0 400 400" role="img" aria-label="A dial, every slice carrying something different"></svg>
+      </span>
+    </button>
+    <p class="hint" id="hint">Turn the dial</p>
+  </section>
+
+</main>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="slip" role="dialog" aria-modal="true" aria-labelledby="rtitle">
+    <span class="stamp" id="stamp" role="img" aria-label="A printed cassette" data-kind="tape"></span>
+    <p class="kicker" id="kicker">—</p>
+    <h2 class="rtitle" id="rtitle">—</h2>
+    <p class="rartist" id="rartist"></p>
+    <p class="rnote" id="rnote" hidden></p>
+    <div class="player" id="player"></div>
+    <p class="rlink" id="rlink" hidden><a href="#" target="_blank" rel="noopener">All 66 sides</a></p>
+    <div class="actions">
+      <button class="btn btn-primary" id="play" type="button">Play</button>
+      <button class="btn btn-ghost" id="again" type="button">Turn again</button>
+    </div>
+  </div>
+</div>
+
+<script>window.POOL = {"count": 80, "entries": [{"artist": "Sameheads", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2383045836&color=%23b6ff2e&auto_play=true", "headline": "Alexander Arpeggio", "id": "mix-2383045836", "kind": "mix", "label": "Alexander Arpeggio", "meta": "C90 #30 · Side A", "title": "Alexander Arpeggio (Side A) - Sameheads C90 Tape Special # 30", "url": "https://soundcloud.com/sameheads/a-side-alexander-arpeggio-2", "weight": 1}, {"artist": "JAZ", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2383045839&color=%23b6ff2e&auto_play=true", "headline": "Club Cosmic", "id": "mix-2383045839", "kind": "mix", "label": "Club Cosmic", "meta": "C90 #30 · Side B", "title": "JAZ (Side B) - Club Cosmic - Sameheads C90 Tape Special # 30", "url": "https://soundcloud.com/sameheads/b-side-jaz-1", "weight": 1}, {"artist": "Benedikt Frey", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2098526886&color=%23b6ff2e&auto_play=true", "headline": "Honey Trap", "id": "mix-2098526886", "kind": "mix", "label": "Honey Trap", "meta": "C60 #29 · Side Y", "title": "Benedikt Frey (Side Y) - Honey Trap - Sameheads C60 Tape Collection Series #29", "url": "https://soundcloud.com/sameheads/side-y-benedikt-frey-1", "weight": 1}, {"artist": "Amelia Holt", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2098526883&color=%23b6ff2e&auto_play=true", "headline": "Honey Trap", "id": "mix-2098526883", "kind": "mix", "label": "Honey Trap", "meta": "C60 #29 · Side X", "title": "Amelia Holt (Side X) - Honey Trap - Sameheads C60 Tape Collection Series #29", "url": "https://soundcloud.com/sameheads/side-x-amelia-holt-2", "weight": 1}, {"artist": "Sameheads", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1928761409&color=%23b6ff2e&auto_play=true", "headline": "Diamin", "id": "mix-1928761409", "kind": "mix", "label": "Diamin", "meta": "C90 · Side X", "title": "Side X - Diamin (Osàre! Editions x Sameheads - C90 Special)", "url": "https://soundcloud.com/sameheads/side-x-diamin-osare-editions-x", "weight": 1}, {"artist": "Sameheads", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1928761403&color=%23b6ff2e&auto_play=true", "headline": "RRRKRTA", "id": "mix-1928761403", "kind": "mix", "label": "RRRKRTA", "meta": "C90 · Side Y", "title": "Side Y - RRRKRTA (Osàre! Editions x Sameheads - C90 Special)", "url": "https://soundcloud.com/sameheads/side-y-rrrkrta-osare-editions", "weight": 1}, {"artist": "Loma Doom", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1813326645&color=%23b6ff2e&auto_play=true", "headline": "Psychedelic Meltdown", "id": "mix-1813326645", "kind": "mix", "label": "Psychedelic", "meta": "C90 · Side A", "title": "Loma Doom (Side A) - Psychedelic Meltdown - Sameheads C90 Tape Cassette Special", "url": "https://soundcloud.com/sameheads/loma-doom-side-a-psychedelic", "weight": 1}, {"artist": "The Slow Brown Fox", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1813326636&color=%23b6ff2e&auto_play=true", "headline": "Psychedelic Meltdown", "id": "mix-1813326636", "kind": "mix", "label": "Psychedelic", "meta": "C90 · Side B", "title": "The Slow Brown Fox (Side B) - Psychedelic Meltdown - Sameheads C90 Tape Cassette Special", "url": "https://soundcloud.com/sameheads/the-slow-brown-fox-side-b", "weight": 1}, {"artist": "Akvilina", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1813326633&color=%23b6ff2e&auto_play=true", "headline": "Psychedelic Meltdown", "id": "mix-1813326633", "kind": "mix", "label": "Psychedelic", "meta": "C90 · Side C", "title": "Akvilina (Side C) - Psychedelic Meltdown - Sameheads C90 Tape Cassette Special", "url": "https://soundcloud.com/sameheads/akvilina-side-c-psychedelic", "weight": 1}, {"artist": "Lizzie Urquart", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1813326627&color=%23b6ff2e&auto_play=true", "headline": "Psychedelic Meltdown", "id": "mix-1813326627", "kind": "mix", "label": "Psychedelic", "meta": "C90 · Side D", "title": "Lizzie Urquart (Side D) - Psychedelic Meltdown - Sameheads C90 Tape Cassette Special", "url": "https://soundcloud.com/sameheads/lizzie-urquart-side-d", "weight": 1}, {"artist": "Fabrizio Mammarella", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1012848559&color=%23b6ff2e&auto_play=true", "headline": "Italian Synth Planetarium Megamix", "id": "mix-1012848559", "kind": "mix", "label": "Italian Synth", "meta": "Side A", "title": "Italian Synth Planetarium Megamix Side A compiled & mixed by Fabrizio Mammarella", "url": "https://soundcloud.com/sameheads/italian-synth-planetarium-1", "weight": 1}, {"artist": "Franz Scala", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1012848556&color=%23b6ff2e&auto_play=true", "headline": "Italian Synth Planetarium Megamix", "id": "mix-1012848556", "kind": "mix", "label": "Italian Synth", "meta": "Side B", "title": "Italian Synth Planetarium Megamix Side B compiled & mixed by Franz Scala", "url": "https://soundcloud.com/sameheads/italian-synth-planetarium", "weight": 1}, {"artist": "Kasra V", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/752701975&color=%23b6ff2e&auto_play=true", "headline": "A Dream within a Dream", "id": "mix-752701975", "kind": "mix", "label": "Dream within a", "meta": "C60 #27 · Side A", "title": "Kasra V \"A Dream within a Dream\" SIDE A Sameheads C60 Tape Series # 27", "url": "https://soundcloud.com/sameheads/kasra-v-a-dream-within-a-dream", "weight": 1}, {"artist": "Kasra V", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/752701987&color=%23b6ff2e&auto_play=true", "headline": "A Dream within a Dream", "id": "mix-752701987", "kind": "mix", "label": "Dream within a", "meta": "C60 #27 · Side B", "title": "Kasra V \"A Dream within a Dream\" SIDE B Sameheads C60 Tape Series # 27", "url": "https://soundcloud.com/sameheads/kasra-v-a-dream-within-a-1", "weight": 1}, {"artist": "Aleksa Alaska", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/750369964&color=%23b6ff2e&auto_play=true", "headline": "Pseudologics", "id": "mix-750369964", "kind": "mix", "label": "Pseudologics", "meta": "C60 #26 · Side A", "title": "Aleksa Alaska \"Pseudologics\" SIDE A - Sameheads C60 Tape Series # 26", "url": "https://soundcloud.com/sameheads/aleksa-alaska-pseudologics-1", "weight": 1}, {"artist": "Aleksa Alaska", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/750369955&color=%23b6ff2e&auto_play=true", "headline": "Pseudologics", "id": "mix-750369955", "kind": "mix", "label": "Pseudologics", "meta": "C60 #26 · Side B", "title": "Aleksa Alaska \"Pseudologics\" SIDE B - Sameheads C60 Tape Series # 26", "url": "https://soundcloud.com/sameheads/aleksa-alaska-pseudologics", "weight": 1}, {"artist": "Neuzeitliche Bodenbeläge", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/721761823&color=%23b6ff2e&auto_play=true", "headline": "Mentholen Gesundheit", "id": "mix-721761823", "kind": "mix", "label": "Mentholen", "meta": "C60 #25 · Side A", "title": "Neuzeitliche Bodenbeläge \"Mentholen Gesundheit\" SIDE A - Sameheads C60 Tape # 25", "url": "https://soundcloud.com/sameheads/neuzeitliche-bodenbelaege-1", "weight": 1}, {"artist": "Neuzeitliche Bodenbeläge", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/721761811&color=%23b6ff2e&auto_play=true", "headline": "Mentholen Gesundheit", "id": "mix-721761811", "kind": "mix", "label": "Mentholen", "meta": "C60 #25 · Side B", "title": "Neuzeitliche Bodenbeläge \"Mentholen Gesundheit\" SIDE B - Sameheads C60 Tape # 25", "url": "https://soundcloud.com/sameheads/neuzeitliche-bodenbelaege", "weight": 1}, {"artist": "Anatolian Weapons", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/717776674&color=%23b6ff2e&auto_play=true", "headline": "Palace Of Imagination", "id": "mix-717776674", "kind": "mix", "label": "Palace Of", "meta": "C60 #24 · Side A", "title": "Anatolian Weapons \"Palace Of Imagination\" Side A - Sameheads C60 Tape Collection Series # 24", "url": "https://soundcloud.com/sameheads/anatolian-weapons-palace-of", "weight": 1}, {"artist": "Anatolian Weapons", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/717776683&color=%23b6ff2e&auto_play=true", "headline": "Palace Of Imagination", "id": "mix-717776683", "kind": "mix", "label": "Palace Of", "meta": "C60 #24 · Side B", "title": "Anatolian Weapons \"Palace Of Imagination\" Side B - Sameheads C60 Tape Collection Series # 24", "url": "https://soundcloud.com/sameheads/anatolian-weapons-palace-of-1", "weight": 1}, {"artist": "Ólta Karawane", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/707751880&color=%23b6ff2e&auto_play=true", "headline": "Empty Tobacco Warehouse", "id": "mix-707751880", "kind": "mix", "label": "Empty Tobacco", "meta": "C60 #23 · Side A", "title": "Ólta Karawane \"Empty Tobacco Warehouse\" SIDE A - Sameheads C60 Tape Collection # 23", "url": "https://soundcloud.com/sameheads/olta-karawane-empty-tobacco-1", "weight": 1}, {"artist": "Ólta Karawane", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/707751865&color=%23b6ff2e&auto_play=true", "headline": "Empty Tobacco Warehouse", "id": "mix-707751865", "kind": "mix", "label": "Empty Tobacco", "meta": "C60 #23 · Side B", "title": "Ólta Karawane \"Empty Tobacco Warehouse\" SIDE B - Sameheads C60 Tape Collection # 23", "url": "https://soundcloud.com/sameheads/olta-karawane-empty-tobacco", "weight": 1}, {"artist": "Booty Carrell", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/669012224&color=%23b6ff2e&auto_play=true", "headline": "Halloumi Nation", "id": "mix-669012224", "kind": "mix", "label": "Halloumi Nation", "meta": "C60 #22 · Side A", "title": "Booty Carrell \"Halloumi Nation\" SIDE A - Sameheads C60 Tape # 22", "url": "https://soundcloud.com/sameheads/booty-carell-halloumi-nation", "weight": 1}, {"artist": "Booty Carrell", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/669012245&color=%23b6ff2e&auto_play=true", "headline": "Halloumi Nation", "id": "mix-669012245", "kind": "mix", "label": "Halloumi Nation", "meta": "C60 #22 · Side B", "title": "Booty Carrell \"Halloumi Nation\" SIDE B - Sameheads C60 Tape # 22", "url": "https://soundcloud.com/sameheads/booty-carell-halloumi-nation-1", "weight": 1}, {"artist": "Dea Barandana", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/689004529&color=%23b6ff2e&auto_play=true", "headline": "Through the Magic Scope", "id": "mix-689004529", "kind": "mix", "label": "Through the Magic", "meta": "C60 #21 · Side A", "title": "Dea Barandana \"Through the Magic Scope\" SIDE A - Sameheads C60 Tape Collection # 21", "url": "https://soundcloud.com/sameheads/dea-barandana-through-the-1", "weight": 1}, {"artist": "Dea Barandana", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/689004511&color=%23b6ff2e&auto_play=true", "headline": "Through the Magic Scope", "id": "mix-689004511", "kind": "mix", "label": "Through the Magic", "meta": "C60 #21 · Side B", "title": "Dea Barandana \"Through the Magic Scope\" SIDE B - Sameheads C60 Tape Collection # 21", "url": "https://soundcloud.com/sameheads/dea-barandana-through-the", "weight": 1}, {"artist": "NOSEDRIP", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/668038475&color=%23b6ff2e&auto_play=true", "headline": "Deprimierter Ziehen Der Sommer", "id": "mix-668038475", "kind": "mix", "label": "Deprimierter", "meta": "C60 #20 · Side A", "title": "NOSEDRIP -  \"Deprimierter Ziehen Der Sommer\" SIDE A - Sameheads C60 Tape Collection # 20", "url": "https://soundcloud.com/sameheads/nosedrip-sameheads-c60a", "weight": 1}, {"artist": "NOSEDRIP", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/668038469&color=%23b6ff2e&auto_play=true", "headline": "Deprimierter Ziehen Der Sommer", "id": "mix-668038469", "kind": "mix", "label": "Deprimierter", "meta": "C60 #20 · Side B", "title": "NOSEDRIP - \"Deprimierter Ziehen Der Sommer\" SIDE B - Sameheads C60 Tape Collection # 20", "url": "https://soundcloud.com/sameheads/nosedrip-sameheads-c60b", "weight": 1}, {"artist": "Izabel", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/613111053&color=%23b6ff2e&auto_play=true", "headline": "IBACUS PERONI", "id": "mix-613111053", "kind": "mix", "label": "IBACUS PERONI", "meta": "Moored in Mooloolaba · C60 #19 · Side A", "title": "Izabel \"Moored in Mooloolaba\" SIDE A - IBACUS PERONI - Sameheads C60 Tape # 19", "url": "https://soundcloud.com/sameheads/izabel-moored-in-mooloolaba", "weight": 1}, {"artist": "Izabel", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/613111074&color=%23b6ff2e&auto_play=true", "headline": "ERSKINE EDIFICE", "id": "mix-613111074", "kind": "mix", "label": "ERSKINE EDIFICE", "meta": "Moored in Mooloolaba · C60 #19 · Side B", "title": "Izabel \"Moored in Mooloolaba\" SIDE B - ERSKINE EDIFICE - Sameheads C60 Tape # 19", "url": "https://soundcloud.com/sameheads/izabel-moored-in-mooloolaba-1", "weight": 1}, {"artist": "Marlene Stark", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/586293090&color=%23b6ff2e&auto_play=true", "headline": "LEB! (Let it be)", "id": "mix-586293090", "kind": "mix", "label": "LEB!", "meta": "C60 #18 · Side A", "title": "Marlene Stark \"LEB! (Let it be)\" Side A - Sameheads C60 Tape Collection Series # 18", "url": "https://soundcloud.com/sameheads/marlene-stark-leb-let-it-be-1", "weight": 1}, {"artist": "Marlene Stark", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/586292268&color=%23b6ff2e&auto_play=true", "headline": "LEB! (Let it be)", "id": "mix-586292268", "kind": "mix", "label": "LEB!", "meta": "C60 #18 · Side B", "title": "Marlene Stark \"LEB! (Let it be)\" Side B - Sameheads C60 Tape Collection Series # 18", "url": "https://soundcloud.com/sameheads/marlene-stark-leb-let-it-be", "weight": 1}, {"artist": "BINTUS", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/566042526&color=%23b6ff2e&auto_play=true", "headline": "Freestyle Euphoria", "id": "mix-566042526", "kind": "mix", "label": "Freestyle Euphoria", "meta": "C60 #17 · Side A", "title": "BINTUS \"Freestyle Euphoria\" Side A - Sameheads C60 Tape Collection # 17", "url": "https://soundcloud.com/sameheads/bintus-freestyle-euphoria", "weight": 1}, {"artist": "BINTUS", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/566042481&color=%23b6ff2e&auto_play=true", "headline": "Freestyle Euphoria", "id": "mix-566042481", "kind": "mix", "label": "Freestyle Euphoria", "meta": "C60 #17 · Side B", "title": "BINTUS \"Freestyle Euphoria\" Side B - Sameheads C60 Tape Collection # 17", "url": "https://soundcloud.com/sameheads/bintus-freestyle-euphoria-side", "weight": 1}, {"artist": "Loud-E", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/551420178&color=%23b6ff2e&auto_play=true", "headline": "Till Death do me", "id": "mix-551420178", "kind": "mix", "label": "Till Death do me", "meta": "C60 #16 · Side A", "title": "Loud-E \"Till Death do me\" - Sameheads C60 Tape Collection # 16 - SIDE A", "url": "https://soundcloud.com/sameheads/loud-e-till-death-do-me-1", "weight": 1}, {"artist": "Loud-E", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/551420169&color=%23b6ff2e&auto_play=true", "headline": "Till Death do me", "id": "mix-551420169", "kind": "mix", "label": "Till Death do me", "meta": "C60 #16 · Side B", "title": "Loud-E \"Till Death do me\" - Sameheads C60 Tape Collection # 16 - SIDE B", "url": "https://soundcloud.com/sameheads/loud-e-till-death-do-me", "weight": 1}, {"artist": "Oscar der Winzige", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/482772858&color=%23b6ff2e&auto_play=true", "headline": "“UNTER POP”", "id": "mix-482772858", "kind": "mix", "label": "“UNTER POP”", "meta": "C60 #15 · Side A", "title": "\"UNTER POP\" compiled by Oscar der Winzige: C60 Tape # 15 - SIDE A", "url": "https://soundcloud.com/sameheads/oscar-unter-pop-mix-side-a", "weight": 1}, {"artist": "Oscar der Winzige", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/482772846&color=%23b6ff2e&auto_play=true", "headline": "“UNTER POP”", "id": "mix-482772846", "kind": "mix", "label": "“UNTER POP”", "meta": "C60 #15 · Side B", "title": "\"UNTER POP\" compiled by Oscar der Winzige: C60 Tape # 15 - SIDE B", "url": "https://soundcloud.com/sameheads/oscar-unter-pop-mix-side-b", "weight": 1}, {"artist": "Jonny 5", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/406531689&color=%23b6ff2e&auto_play=true", "headline": "Knickerpunkerz", "id": "mix-406531689", "kind": "mix", "label": "Knickerpunkerz", "meta": "C60 #14 · Side A", "title": "Jonny 5 \"7\" Knickerpunkerz\" SIDE A - Sameheads C60 Collection # 14", "url": "https://soundcloud.com/sameheads/bahnsteig-23-mixed-by-jonny", "weight": 1}, {"artist": "Jonny 5", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/406531686&color=%23b6ff2e&auto_play=true", "headline": "Knickerpunkerz", "id": "mix-406531686", "kind": "mix", "label": "Knickerpunkerz", "meta": "C60 #14 · Side B", "title": "Jonny 5 \"7\" Knickerpunkerz\" SIDE B - Sameheads C60 Collection # 14", "url": "https://soundcloud.com/sameheads/bahnsteig-23-mixed-by-jonny-5", "weight": 1}, {"artist": "An-i", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/435454512&color=%23b6ff2e&auto_play=true", "headline": "An Afterparty of 1", "id": "mix-435454512", "kind": "mix", "label": "Afterparty of 1", "meta": "C60 #13 · Side A", "title": "An-i \"An Afterparty of 1\" - SIDE A - Sameheads C60 Tape Collection # 13", "url": "https://soundcloud.com/sameheads/side-a", "weight": 1}, {"artist": "An-i", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/435454518&color=%23b6ff2e&auto_play=true", "headline": "An Afterparty of 1", "id": "mix-435454518", "kind": "mix", "label": "Afterparty of 1", "meta": "C60 #13 · Side B", "title": "An-i \"An Afterparty of 1\" - SIDE B - Sameheads C60 Tape Collection # 13", "url": "https://soundcloud.com/sameheads/side-b", "weight": 1}, {"artist": "Elena Colombi", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/379115282&color=%23b6ff2e&auto_play=true", "headline": "Spi.Ritual", "id": "mix-379115282", "kind": "mix", "label": "Spi.Ritual", "meta": "C60 #12 · Side A", "title": "Elena Colombi \"Spi.Ritual\" SIDE A - Sameheads C60 Tape Collection Series # 12", "url": "https://soundcloud.com/sameheads/elena-colombi-spi-ritual", "weight": 1}, {"artist": "Elena Colombi", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/379115276&color=%23b6ff2e&auto_play=true", "headline": "Spi.Ritual", "id": "mix-379115276", "kind": "mix", "label": "Spi.Ritual", "meta": "C60 #12 · Side B", "title": "Elena Colombi \"Spi.Ritual\" SIDE B - Sameheads C60 Tape Collection Series # 12", "url": "https://soundcloud.com/sameheads/elena-colombi-spi-ritual-side", "weight": 1}, {"artist": "Oscar der Winzige", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/370747487&color=%23b6ff2e&auto_play=true", "headline": "The Ability to Talk", "id": "mix-370747487", "kind": "mix", "label": "Ability to Talk", "meta": "C60 #11 · Side A", "title": "Oscar der Winzige \"The Ability to Talk\" - Sameheads C60 Tape # 11 - SIDE A", "url": "https://soundcloud.com/sameheads/oscar-der-winzige-the-ability", "weight": 1}, {"artist": "Oscar der Winzige", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/370747493&color=%23b6ff2e&auto_play=true", "headline": "The Ability to Talk", "id": "mix-370747493", "kind": "mix", "label": "Ability to Talk", "meta": "C60 #11 · Side B", "title": "Oscar der Winzige \"The Ability to Talk\" - Sameheads C60 Tape # 11 - SIDE B", "url": "https://soundcloud.com/sameheads/oscar-der-winzige-the", "weight": 1}, {"artist": "Sacha Mambo", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/347779799&color=%23b6ff2e&auto_play=true", "headline": "The Words of Canonic Explotation", "id": "mix-347779799", "kind": "mix", "label": "Words of Canonic", "meta": "Side A", "title": "Sacha Mambo - The Words of Canonic Explotation - Side A", "url": "https://soundcloud.com/sameheads/sacha-mambo-the-words-of", "weight": 1}, {"artist": "Sacha Mambo", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/347779800&color=%23b6ff2e&auto_play=true", "headline": "The Canonic Explotation of Words", "id": "mix-347779800", "kind": "mix", "label": "Canonic", "meta": "Side B", "title": "Sacha Mambo - The Canonic Explotation of Words - Side B", "url": "https://soundcloud.com/sameheads/sacha-mambo-the-canonic", "weight": 1}, {"artist": "dane//close", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/337823729&color=%23b6ff2e&auto_play=true", "headline": "Familiar Fortunes", "id": "mix-337823729", "kind": "mix", "label": "Familiar Fortunes", "meta": "C60 #9 · Side A", "title": "dane//close \"Familiar Fortunes\" SIDE A - Sameheads C60 Tape release # 9", "url": "https://soundcloud.com/sameheads/dane-close-familiar-fortunes", "weight": 1}, {"artist": "dane//close", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/337823732&color=%23b6ff2e&auto_play=true", "headline": "Familiar Fortunes", "id": "mix-337823732", "kind": "mix", "label": "Familiar Fortunes", "meta": "C60 #9 · Side B", "title": "dane//close \"Familiar Fortunes\" SIDE B - Sameheads C60 Tape release # 9", "url": "https://soundcloud.com/sameheads/dane-close-familiar-fortunes-1", "weight": 1}, {"artist": "Zozo", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/317342599&color=%23b6ff2e&auto_play=true", "headline": "Dark Magic", "id": "mix-317342599", "kind": "mix", "label": "Dark Magic", "meta": "Witchez of Anatolia · Side A", "title": "Zozo \"Witchez of Anatolia\" Side A Dark Magic Side", "url": "https://soundcloud.com/sameheads/zozo-witchez-of-anatolia", "weight": 1}, {"artist": "Zozo", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/317342585&color=%23b6ff2e&auto_play=true", "headline": "Light Magic", "id": "mix-317342585", "kind": "mix", "label": "Light Magic", "meta": "Witchez of Anatolia · Side B", "title": "Zozo \"Witchez of Anatolia\" Side B Light Magic Side", "url": "https://soundcloud.com/sameheads/zozo-witchez-of-anatolia-side", "weight": 1}, {"artist": "CHIKISS", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/301101545&color=%23b6ff2e&auto_play=true", "headline": "Magical Soviet Soundtracks of the 60's & 70's", "id": "mix-301101545", "kind": "mix", "label": "Magical Soviet", "meta": "C60 · Side A", "title": "Magical Soviet Soundtracks of the 60's & 70's Side A - Compiled by CHIKISS: Sameheads C60 Tape", "url": "https://soundcloud.com/sameheads/magical-soviet-soundtracks-of-the-60s-70s-side-a-compiled-by-chikiss-sameheads-c60-tape", "weight": 1}, {"artist": "CHIKISS", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/301101550&color=%23b6ff2e&auto_play=true", "headline": "Magical Soviet Soundtracks of the 60's & 70's", "id": "mix-301101550", "kind": "mix", "label": "Magical Soviet", "meta": "C60 · Side B", "title": "Magical Soviet Soundtracks of the 60's & 70's Side B - Compiled by CHIKISS: Sameheads C60 Tape", "url": "https://soundcloud.com/sameheads/magical-soviet-soundtracks-of-the-60s-70sside-b-compiled-by-chikiss-sameheads-c60-tape", "weight": 1}, {"artist": "Vladimir Ivkovic", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/284925918&color=%23b6ff2e&auto_play=true", "headline": "lOVe", "id": "mix-284925918", "kind": "mix", "label": "lOVe", "meta": "C60 · Side A", "title": "Vladimir Ivkovic \"lOVe tape\" Side A - Sameheads C60 Tape Collection", "url": "https://soundcloud.com/sameheads/vladimir-ivkovic-love-tape-side-a-sameheads-c60-tape-collection", "weight": 1}, {"artist": "Vladimir Ivkovic", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/284925921&color=%23b6ff2e&auto_play=true", "headline": "lOVe", "id": "mix-284925921", "kind": "mix", "label": "lOVe", "meta": "C60 · Side B", "title": "Vladimir Ivkovic \"lOVe tape\" Side B - Sameheads C60 Tape Collection", "url": "https://soundcloud.com/sameheads/vladimir-ivkovic-love-tape-side-b-sameheads-c60-tape-collection", "weight": 1}, {"artist": "As Longitude", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/281214479&color=%23b6ff2e&auto_play=true", "headline": "Longitude / Latitude", "id": "mix-281214479", "kind": "mix", "label": "Longitude /", "meta": "C60 #5 · Side A", "title": "As Longitude \"Longitude / Latitude\" Side A - Sameheads C60 Tape Collection Series # 5", "url": "https://soundcloud.com/sameheads/as-longitude-longitude-latitude-side-a-sameheads-c60-tape-collection-series-5", "weight": 1}, {"artist": "As Longitude", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/281214476&color=%23b6ff2e&auto_play=true", "headline": "Longitude / Latitude", "id": "mix-281214476", "kind": "mix", "label": "Longitude /", "meta": "C60 #5 · Side B", "title": "As Longitude \"Longitude / Latitude\" Side B - Sameheads C60 Tape Collection Series # 5", "url": "https://soundcloud.com/sameheads/as-longitude-longitude-latitude-side-b-sameheads-c60-tape-collection-series-5", "weight": 1}, {"artist": "ANDY VOTEL", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/204019933&color=%23b6ff2e&auto_play=true", "headline": "THE CURSE OF THE TINFOIL TEMPURA", "id": "mix-204019933", "kind": "mix", "label": "THE CURSE OF THE", "meta": "C60 #1", "title": "ANDY VOTEL - THE CURSE OF THE TINFOIL TEMPURA - Sameheads C60 Tape Collection Series #1", "url": "https://soundcloud.com/sameheads/andy-votel-the-curse-of-the-tinfoil-tempura-exclusive-sameheads-tape-1", "weight": 1}, {"artist": "Albion", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/228263132&color=%23b6ff2e&auto_play=true", "headline": "“Tapeheads”", "id": "mix-228263132", "kind": "mix", "label": "“Tapeheads”", "meta": "C60 #2 · Side A", "title": "\"Tapeheads\" Side A by Albion - Sameheads C60 Tape Collection Series #2", "url": "https://soundcloud.com/sameheads/tapeheads-side-a-by-albion-sameheads-c60-tape-collection-series-2", "weight": 1}, {"artist": "Albion", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/228264499&color=%23b6ff2e&auto_play=true", "headline": "“Tapeheads”", "id": "mix-228264499", "kind": "mix", "label": "“Tapeheads”", "meta": "C60 #2 · Side B", "title": "\"Tapeheads\" Side B by Albion - Sameheads C60 Tape Collection Series #2", "url": "https://soundcloud.com/sameheads/tapeheads-side-b-by-albion-sameheads-c60-tape-collection-series-2", "weight": 1}, {"artist": "Silvia Kastel", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/262461309&color=%23b6ff2e&auto_play=true", "headline": "Ultramarine Transmissions", "id": "mix-262461309", "kind": "mix", "label": "Ultramarine", "meta": "C60 · Side A", "title": "Silvia Kastel \"Ultramarine Transmissions\" Side A - Sameheads C60 Tape Collection Series", "url": "https://soundcloud.com/sameheads/silvia-kastel-ultramarine-transmissions-side-a-sameheads-c60-tape-collection-series", "weight": 1}, {"artist": "Silvia Kastel", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/262461315&color=%23b6ff2e&auto_play=true", "headline": "Ultramarine Transimissions", "id": "mix-262461315", "kind": "mix", "label": "Ultramarine", "meta": "C60 · Side B", "title": "Silvia Kastel \"Ultramarine Transimissions\" Side B - Sameheads C60 Tape Collection Series", "url": "https://soundcloud.com/sameheads/silvia-kastel-ultramarine-transimissions-side-b-sameheads-c60-tape-collection-series", "weight": 1}, {"artist": "Emil Doesn't Drive", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/98549390&color=%23b6ff2e&auto_play=true", "headline": "Luna Park", "id": "mix-98549390", "kind": "mix", "label": "Luna Park", "meta": "Exclusive Front Ear Magazine Mixtape", "title": "Luna Park by Emil Doesn't Drive - *Exclusive Front Ear Magazine Mixtape*", "url": "https://soundcloud.com/sameheads/luna-park-exclusive-front-ear", "weight": 1}, {"artist": "Sameheads", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/276057434&color=%23b6ff2e&auto_play=true", "headline": "Dj Alfredo Live @ Amnesia '89 part 1", "id": "mix-276057434", "kind": "mix", "label": "Dj Alfredo Live @", "meta": "C60", "title": "Dj Alfredo *Live @ Amnesia '89 part 1 - Sameheads C60 Tape Series", "url": "https://soundcloud.com/sameheads/dj-alfredo-live-amnesia-89-part-1-sameheads-c60-tape-series", "weight": 1}, {"artist": "Sameheads", "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/276057429&color=%23b6ff2e&auto_play=true", "headline": "Dj Alfredo Live @ Amnesia '89 part 2", "id": "mix-276057429", "kind": "mix", "label": "Dj Alfredo Live @", "meta": "C60", "title": "Dj Alfredo *Live @ Amnesia '89 part 2 - Sameheads C60 Tape Series", "url": "https://soundcloud.com/sameheads/dj-alfredo-live-amnesia-89-part-2-sameheads-c60-tape-series", "weight": 1}, {"headline": "Argentina's wild coast", "id": "other-cormorant", "kind": "other", "label": "The voices outside", "meta": "", "note": "The birds are arguing. Live.", "title": "Argentina's wild coast", "url": "https://explore.org/livecams/rewilding-argentina/rewilding-cormorant", "weight": 1}, {"headline": "ISS — live view of Earth", "id": "other-iss", "kind": "other", "label": "All nights are one", "meta": "", "note": "The proper space webcam she wished for.", "title": "ISS — live view of Earth", "url": "https://eol.jsc.nasa.gov/ESRS/HDEV/", "weight": 1}, {"headline": "The poem, read aloud", "id": "other-poem", "kind": "poem", "label": "A copy of the night", "meta": "", "note": "Her own reading. English first, then German.", "title": "The poem, read aloud", "url": "assets/audio/poem-reading.mp3", "weight": 2, "embed": "assets/audio/poem-reading.mp3"}, {"headline": "The tape collection", "id": "other-collection", "kind": "collection", "label": "The music snaps", "meta": "", "note": "All 66 sides, in one place.", "title": "The tape collection", "url": "https://soundcloud.com/sameheads/sets/sameheads-c60-tape-collection", "weight": 1, "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/154733222&color=%23b6ff2e&auto_play=true&show_artwork=false&show_comments=false"}, {"headline": "Sameheads, Richardstr. 10", "id": "other-sameheads", "kind": "other", "label": "The stolen city", "meta": "", "title": "Sameheads, Richardstr. 10", "url": "https://sameheads.com/", "weight": 1}, {"headline": "20th birthday, 20 Nov", "id": "other-birthday", "kind": "other", "label": "The 4am dancefloor", "meta": "", "title": "20th birthday, 20 Nov", "url": "https://ra.co/events/2521007", "weight": 1}, {"headline": "Pasted into morning", "id": "other-morning", "kind": "other", "label": "Pasted into morning", "meta": "", "title": "Pasted into morning", "url": "https://www.cameronsworld.net/", "weight": 1, "note": "The whole early web, in one page."}, {"headline": "Keep the streets dirty", "id": "other-dirty", "kind": "other", "label": "Keep the streets dirty", "meta": "", "title": "Keep the streets dirty", "url": "https://www.instagram.com/sameheads/", "weight": 1, "note": "Proof of life."}, {"headline": "Use the darkness wisely", "id": "other-dark", "kind": "other", "label": "Darkness, used wisely", "meta": "", "title": "Darkness, used wisely", "url": "https://theuselessweb.com/", "weight": 1, "note": "One door at random. Nothing behind it."}, {"headline": "Hide your light", "id": "other-light", "kind": "other", "label": "Hide your light", "meta": "", "title": "Hide your light", "url": "https://www.lightpollutionmap.info/#zoom=4.00&lat=45.8720&lon=14.5470&state=eyJiYXNlbWFwIjoiTGF5ZXJCaW5nUm9hZCIsIm92ZXJsYXkiOiJzYl8yMDI1Iiwib3ZlcmxheWNvbG9yIjpmYWxzZSwib3ZlcmxheU9wYWNpdHkiOiI2MCIsImZlYXR1cmVzb3BhY2l0eSI6Ijg1In0=", "weight": 1, "note": "Where the dark still is."}, {"headline": "A stranger's lighter", "id": "other-lighter", "kind": "other", "label": "A stranger's lighter", "meta": "", "note": "Etna, live, 24 hours a day.", "title": "A stranger's lighter", "url": "https://www.gpetnalive.com/en/diretta", "weight": 1}, {"headline": "The last train home", "id": "other-lasttrain", "kind": "other", "label": "The last train home", "meta": "", "title": "The last train home", "url": "https://driveandlisten.app/", "weight": 1, "note": "Another city, driving, radio on."}, {"headline": "The music snaps", "id": "other-snap", "kind": "collection", "label": "And the music snaps", "meta": "", "title": "The music snaps", "url": "https://soundcloud.com/sameheads/sets/sameheads-c60-tape-collection", "weight": 1, "embed": "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/154733222&color=%23b6ff2e&auto_play=true&show_artwork=false&show_comments=false"}, {"headline": "Loophole, now a Kita", "id": "other-kita", "kind": "other", "label": "Loophole, now a Kita", "meta": "", "note": "Pick a city. Any city.", "title": "Loophole, now a Kita", "url": "https://neal.fun/asteroid-launcher/", "weight": 1}], "note": "Every entry carries a label short enough to print radially on the dial.", "updated": "2026-11-08", "version": 3};</script>
+<script>
+(function(){
+  "use strict";
+  const POOL = window.POOL.entries.filter(e => (e.weight ?? 1) > 0);
+  const N = POOL.length, STEP = 360 / N;
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.getElementById("wheel");
+  const dial = document.getElementById("dial");
+  const sheet = document.getElementById("sheet");
+  const hint = document.getElementById("hint");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const CREAM = "#c8e25c", BLUSH = "#eed3a8", OXBLOOD = "#fa1653", INK = "#0a090b";
+
+  const el = (n,a)=>{ const e=document.createElementNS(NS,n); for(const k in a) e.setAttribute(k,a[k]); return e; };
+  const pol = (d,r)=>{ const a=(d-90)*Math.PI/180; return [200+r*Math.cos(a), 200+r*Math.sin(a)]; };
+
+  // Spread the oddities around the dial so they are not stacked in one arc.
+  const order = (() => {
+    const mixes=[], others=[];
+    POOL.forEach((e,i)=>(e.kind==="mix"?mixes:others).push(i));
+    if(!others.length) return POOL.map((_,i)=>i);
+    const out=new Array(POOL.length).fill(-1);
+    others.forEach((idx,j)=>{
+      const slot=Math.round((j+.5)*POOL.length/others.length)%POOL.length;
+      let k=slot; while(out[k]!==-1) k=(k+1)%POOL.length;
+      out[k]=idx;
+    });
+    let m=0; for(let i=0;i<out.length;i++) if(out[i]===-1) out[i]=mixes[m++];
+    return out;
+  })();
+
+  const g = el("g", {});
+
+  // ---- slices ----
+  for (let i=0;i<N;i++){
+    const a0=i*STEP-STEP/2, a1=a0+STEP;
+    const [x0,y0]=pol(a0,186), [x1,y1]=pol(a1,186);
+    const d=`M200,200 L${x0.toFixed(2)},${y0.toFixed(2)} A186,186 0 0 1 ${x1.toFixed(2)},${y1.toFixed(2)} Z`;
+    const e = POOL[order[i]];
+    // Solid cream, like the printed card: one ink for the whole ring, the
+    // black ground showing through as a hairline gap between wedges.
+    g.appendChild(el("path",{ d, fill:CREAM, stroke:INK, "stroke-width":".8" }));
+  }
+
+  // ---- the sayings, one per slice, printed along the radius ----
+  //
+  // Two rules keep radial type readable:
+  //   1. right half reads outward from the hub, left half reads inward from
+  //      the rim, so no label is ever upside down;
+  //   2. every label is clipped to the ring and shrunk/trimmed to fit its
+  //      band, so nothing spills outside the circle or breaks mid-word.
+  const R_IN = 88, R_OUT = 178, BAND = R_OUT - R_IN - 3;
+
+  const defs = el("defs", {});
+  const cp = el("clipPath", { id:"ringclip" });
+  cp.appendChild(el("circle",{ cx:200, cy:200, r:184 }));
+  defs.appendChild(cp);
+  svg.appendChild(defs);
+  const lg = el("g", { "clip-path":"url(#ringclip)" });
+
+  const base = POOL.map(e => (e.label || e.headline || e.title || "").toUpperCase());
+  const seen = {};
+  base.forEach(l => { if (l) seen[l] = (seen[l]||0) + 1; });
+  const sideOf = e => {
+    const m = /side\s+([a-z])\b/i.exec(e.meta || "");
+    return m ? m[1].toUpperCase() : "";
+  };
+
+  for (let i=0;i<N;i++){
+    const idx = order[i], e = POOL[idx];
+    let label = base[idx];
+    if (!label) continue;
+    // two sides of one tape share a title; print which side so the dial
+    // does not look like it is repeating itself
+    if (seen[label] > 1){
+      const s = sideOf(e);
+      if (s) label = label + " · " + s;
+    }
+    const a = i*STEP;
+    const inward = a > 180;
+    const [px,py] = inward ? pol(a, R_OUT) : pol(a, R_IN);
+    const rot = inward ? a - 270 : a - 90;
+    const t = el("text", {
+      x: px.toFixed(2), y: py.toFixed(2),
+      fill: INK,
+      "font-family": "Cormorant Upright, Georgia, serif",
+      "font-size": "6.2",
+      "letter-spacing": ".06",
+      "text-anchor": "start",
+      "dominant-baseline": "middle",
+      transform: `rotate(${rot.toFixed(2)} ${px.toFixed(2)} ${py.toFixed(2)})`
+    });
+    t.textContent = label;
+    lg.appendChild(t);
+
+    let fs = 6.2;
+    while (t.getComputedTextLength() > BAND && fs > 4.6){
+      fs -= .2; t.setAttribute("font-size", fs.toFixed(1));
+    }
+    if (t.getComputedTextLength() > BAND){
+      let s = label;
+      while (s.length > 4 && t.getComputedTextLength() > BAND){
+        s = s.slice(0, -2);
+        t.textContent = s.replace(/[\s·,-]+$/,"") + "…";
+      }
+    }
+  }
+
+  // ---- rims ----
+  // ---- ticks outside the rim, like a tuner scale ----
+  for (let i=0;i<N;i++){
+    const major = i % 10 === 0;
+    const [tx0,ty0] = pol(i*STEP, 190);
+    const [tx1,ty1] = pol(i*STEP, major ? 199 : 195);
+    g.appendChild(el("line",{
+      x1:tx0.toFixed(2), y1:ty0.toFixed(2), x2:tx1.toFixed(2), y2:ty1.toFixed(2),
+      stroke: major ? "rgba(200,226,92,.82)" : "rgba(200,226,92,.34)",
+      "stroke-width": major ? ".9" : ".45"
+    }));
+  }
+  g.appendChild(el("circle",{ cx:200,cy:200,r:186, fill:"none", stroke:CREAM,"stroke-width":"1.6" }));
+  g.appendChild(el("circle",{ cx:200,cy:200,r:181, fill:"none", stroke:"rgba(200,226,92,.24)","stroke-width":".6" }));
+
+  // ---- hub: the roundel, and the number you landed on ----
+  g.appendChild(el("circle",{ cx:200,cy:200,r:78, fill:INK, stroke:CREAM,"stroke-width":"1.2" }));
+  g.appendChild(el("circle",{ cx:200,cy:200,r:70, fill:"none", stroke:OXBLOOD,"stroke-width":".9" }));
+  const hubTop = el("text",{ x:200,y:188, fill:CREAM,
+    "font-family":"Anton, Arial Narrow, sans-serif","font-size":"11",
+    "letter-spacing":"2.4","text-anchor":"middle" });
+  hubTop.textContent = "SAMEHEADS"; g.appendChild(hubTop);
+  const hubNum = el("text",{ x:200,y:214, fill:CREAM,
+    "font-family":"Cormorant Upright, Georgia, serif","font-size":"26",
+    "text-anchor":"middle","opacity":"0" });
+  g.appendChild(hubNum);
+  const hubFoot = el("text",{ x:200,y:236, fill:"rgba(250,22,83,.85)",
+    "font-family":"Cormorant Upright, Georgia, serif","font-size":"7.2",
+    "letter-spacing":"2","text-anchor":"middle" });
+  hubFoot.textContent = "ON THE DIAL"; g.appendChild(hubFoot);
+  svg.appendChild(g);
+  svg.appendChild(lg);   // labels sit above the slices
+
+  // ---- pick ----
+  const total = POOL.reduce((s,e)=>s+(e.weight??1),0);
+  function pick(){
+    const recent = JSON.parse(sessionStorage.getItem("sh20v6")||"[]");
+    for (let t=0;t<14;t++){
+      let r=Math.random()*total, k=0;
+      while (r>(POOL[k].weight??1) && k<N-1){ r-=(POOL[k].weight??1); k++; }
+      if (!recent.includes(k) || t===13) return k;
+    }
+    return 0;
+  }
+
+  // ---- spin ----
+  let rot=0, busy=false;
+  function spin(){
+    if (busy) return;
+    busy=true; dial.disabled=true;
+    hint.dataset.spin="1"; hint.textContent="Turning…";
+    const idx = pick();
+    const slot = order.indexOf(idx);
+    const want = (-(slot*STEP)%360+360)%360;
+    const delta = ((want-(rot%360))+360)%360;
+    rot += 360*5 + delta;
+    const dur = reduce ? 200 : 2400;
+    svg.style.transition = `transform ${dur}ms cubic-bezier(.14,.72,.08,1)`;
+    svg.style.transform = `rotate(${rot}deg)`;
+    setTimeout(()=>{
+      busy=false; dial.disabled=false;
+      hint.dataset.spin="0"; hint.textContent="Turn the dial";
+      hubNum.textContent = String(idx+1);
+      hubNum.setAttribute("opacity",".95");
+      const recent = JSON.parse(sessionStorage.getItem("sh20v6")||"[]");
+      recent.push(idx);
+      sessionStorage.setItem("sh20v6", JSON.stringify(recent.slice(-3)));
+      show(idx);
+    }, dur+60);
+  }
+
+  // ---- result ----
+  const R = {
+    slip:document.querySelector(".slip"),
+    stamp:document.getElementById("stamp"),
+    kicker:document.getElementById("kicker"),
+    title:document.getElementById("rtitle"),
+    artist:document.getElementById("rartist"),
+    note:document.getElementById("rnote"),
+    player:document.getElementById("player"),
+    link:document.getElementById("rlink"),
+    play:document.getElementById("play"),
+    again:document.getElementById("again"),
+  };
+  // Every slice prints on its own stock: four inks off her card plus the
+  // oxblood from her first one. Same slice, same paper, every time.
+  const CARD = [
+    {bg:"#fa1653", ink:"#0a090b"},
+    {bg:"#c8e25c", ink:"#0a090b"},
+    {bg:"#ece4d2", ink:"#0a090b"},
+    {bg:"#e9cbc4", ink:"#0a090b"},
+    {bg:"#721736", ink:"#ece4d2"},
+  ];
+  function cardStock(e){
+    // The poem's plate is a pale sepia print drawn on cream; on pink it reads
+    // as a failed image. Give that one slice the paper it was made for.
+    if (e.kind === "poem") return CARD[2];
+    const k=String(e.id||e.label||e.title||""); let h=2166136261;
+    for(let i=0;i<k.length;i++){ h^=k.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
+    return CARD[h%CARD.length];
+  }
+  function show(i){
+    const e = POOL[i];
+    const stock = cardStock(e);
+    R.slip.style.setProperty("--card", stock.bg);
+    R.slip.style.setProperty("--cardInk", stock.ink);
+    R.player.innerHTML=""; R.note.hidden=true; R.play.hidden=false;
+    R.link.hidden=true; R.link.firstElementChild.removeAttribute("href");
+    if (e.kind === "mix"){
+      R.stamp.dataset.kind="tape"; R.stamp.setAttribute("aria-label","A printed cassette");
+      R.kicker.textContent = e.meta || "From the tape collection";
+      R.title.textContent = e.headline || e.title;
+      R.artist.textContent = e.artist || "";
+      R.play.textContent="Play the tape";
+      R.play.onclick=()=>{
+        const f=document.createElement("iframe");
+        f.height="166"; f.allow="autoplay"; f.loading="lazy";
+        f.title="SoundCloud player: "+e.headline; f.src=e.embed;
+        R.player.appendChild(f); R.play.hidden=true;
+      };
+    } else if (e.kind === "collection"){
+      R.stamp.dataset.kind="tape"; R.stamp.setAttribute("aria-label","A printed cassette");
+      R.kicker.textContent = "The tape collection \u00b7 66 sides";
+      R.title.textContent = e.label || e.title;
+      R.artist.textContent = "";
+      const sides = POOL.filter(x => x.kind === "mix" && x.embed);
+      let last = -1;
+      R.play.textContent = "Play a tape";
+      R.play.onclick = () => {
+        let k = Math.floor(Math.random() * sides.length);
+        if (sides.length > 1 && k === last) k = (k + 1 + Math.floor(Math.random()*(sides.length-1))) % sides.length;
+        last = k;
+        R.player.innerHTML = "";
+        const f = document.createElement("iframe");
+        f.height="166"; f.allow="autoplay"; f.loading="lazy";
+        f.title = "SoundCloud player: " + (sides[k].headline || sides[k].title);
+        f.src = sides[k].embed;
+        R.player.appendChild(f);
+        R.play.textContent = "Another tape";
+        R.link.firstElementChild.href = e.url;
+        R.link.hidden = false;
+      };
+      if (e.note){ R.note.hidden=false; R.note.textContent=e.note; }
+    } else if (e.kind === "poem"){
+      R.stamp.dataset.kind="skid"; R.stamp.setAttribute("aria-label","Sameheads");
+      R.kicker.textContent = "The poem";
+      R.title.textContent = e.label || e.title;
+      R.artist.textContent = "";
+      R.note.hidden=false; R.note.textContent = e.note || "";
+      let aud=null, fill=null, clock=null;
+      const mmss = t => {
+        if(!isFinite(t)) return "0:00";
+        const m=Math.floor(t/60), sec=Math.floor(t%60);
+        return m+":"+String(sec).padStart(2,"0");
+      };
+      const total = 57.5;
+      R.play.textContent = "Hear it read";
+      R.play.onclick = () => {
+        if (aud && !aud.paused){ aud.pause(); R.play.textContent="Hear it read"; return; }
+        if (!aud){
+          R.player.innerHTML = "";
+          const wrap=document.createElement("div"); wrap.className="reading";
+          const track=document.createElement("div"); track.className="track";
+          fill=document.createElement("div"); fill.className="fill";
+          track.appendChild(fill);
+          clock=document.createElement("p"); clock.className="time"; clock.textContent="0:00 / "+mmss(total);
+          wrap.appendChild(track); wrap.appendChild(clock);
+          aud=document.createElement("audio");
+          aud.preload="auto"; aud.src=e.embed;
+          aud.addEventListener("timeupdate",()=>{
+            const d=aud.duration||total;
+            fill.style.width=(aud.currentTime/d*100).toFixed(2)+"%";
+            clock.textContent=mmss(aud.currentTime)+" / "+mmss(d);
+          });
+          aud.addEventListener("ended",()=>{
+            R.play.textContent="Hear it read";
+            fill.style.width="0%"; clock.textContent="0:00 / "+mmss(aud.duration||total);
+            aud.currentTime=0;
+          });
+          wrap.appendChild(aud);
+          R.player.appendChild(wrap);
+        }
+        aud.play();
+        R.play.textContent="Stop";
+      };
+    } else {
+      R.stamp.dataset.kind="skid"; R.stamp.setAttribute("aria-label","Sameheads");
+      R.kicker.textContent = "Something else entirely";
+      R.title.textContent = e.label || e.title;
+      R.artist.textContent = e.title && e.title !== e.label ? e.title : "";
+      R.play.textContent="Open";
+      R.play.onclick=()=>window.open(e.url,"_blank","noopener");
+      if (e.note){ R.note.hidden=false; R.note.textContent=e.note; }
+    }
+    sheet.hidden=false; document.body.classList.add("locked");
+    R.again.focus();
+  }
+  function close(){ R.player.innerHTML=""; sheet.hidden=true; document.body.classList.remove("locked"); dial.focus(); }
+
+  dial.addEventListener("click", spin);
+  R.again.addEventListener("click", ()=>{ close(); setTimeout(spin,120); });
+  sheet.addEventListener("click", ev=>{ if(ev.target===sheet) close(); });
+  addEventListener("keydown", ev=>{ if(ev.key==="Escape" && !sheet.hidden) close(); });
+
+})();
+</script>
+</body>
+</html>
